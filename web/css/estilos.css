@@ -1,0 +1,91 @@
+* {
+    font-family: Arial !important;
+    box-sizing: border-box;
+}
+
+html {
+    height: 100%;
+}
+body {
+    background-color: #ECF0F1;
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+#logo {
+    margin: 0.2rem 1rem;
+    width: 2rem;
+}
+.navbar-toggler {
+    margin-bottom: 0.5rem;
+    margin-top: 0.5rem;
+}
+#navbar {
+    border-bottom: 1px #BDC3C7 solid;
+}
+.nav-item {
+    margin-left: 1em;
+    margin-right: 1em;
+    font-weight: 600;
+}
+#nav-logout {
+    display: flex;
+    flex-grow: 1;
+    justify-content: flex-end;
+}
+
+#main-wrapper {
+    padding-top: 2em;
+}
+
+#error-wrapper {
+    margin-top: 15%;
+}
+
+.divider {
+    height: 1px;
+    background: #BDC3C7;
+    border: none;
+    margin: 0;
+    margin-bottom: 1em;
+}
+
+#wrapper-login-lateral {
+    border: #BDC3C7 1px solid;
+    border-radius: 4px;
+}
+
+#footer {
+    padding: 18px 15px;
+}
+
+.btn-primary {
+    border-color: #2ECC71 !important;
+    background-color: #2ECC71 !important;
+    font-weight: 550 !important;
+    transition: all 50ms ease; 
+}
+.btn-primary:hover {
+    background-color: #27AE60 !important;
+}
+.btn-primary:focus, .btn-primary:active:focus {
+    box-shadow: 0 0 0 0.10rem #27AE60;
+}
+.form-control:focus,.form-control:active:focus,
+.form-select:focus, .form-select:active:focus {
+    box-shadow: 0 0 0 0.10rem #27AE60 !important;
+}
+
+.card {
+    cursor: pointer;
+    transition: all .15s ease;
+}
+.card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 2px 10px 0 rgb(37 50 56 / 10%);
+}
+
+textarea#descripcion, textarea#texto {
+  resize: none !important;
+}
