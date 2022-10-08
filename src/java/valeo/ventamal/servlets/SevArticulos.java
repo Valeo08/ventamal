@@ -62,7 +62,6 @@ public class SevArticulos extends HttpServlet {
         
         TypedQuery<Articulo> query;
         List<Articulo> lr;
-        List<Articulo> artInteres;
         Articulo a;
         TypedQuery<Usuario> queryUsuario;
         List<Usuario> lu;

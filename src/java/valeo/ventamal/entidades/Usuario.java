@@ -1,6 +1,7 @@
 package valeo.ventamal.entidades;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.util.Objects;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -58,6 +59,9 @@ public class Usuario implements Serializable {
     
     @Column(name="tlf",unique=true,nullable=false)
     private String telefono;
+    
+    @Column(name="fecha_registro",nullable=false)
+    private Timestamp fechaRegistro;
 
     public Long getId() {
         return id;
@@ -130,16 +134,28 @@ public class Usuario implements Serializable {
     public void setTelefono(String telefono) {
         this.telefono = telefono;
     }
+    
+    public Timestamp getFechaRegistro() {
+        return fechaRegistro;
+    }
+
+    public void setFechaRegistro(Timestamp fechaRegistro) {
+        this.fechaRegistro = fechaRegistro;
+    }
 
     @Override
     public int hashCode() {
         int hash = 3;
-        hash = 67 * hash + Objects.hashCode(this.id);
-        hash = 67 * hash + Objects.hashCode(this.correo);
-        hash = 67 * hash + Objects.hashCode(this.pass);
-        hash = 67 * hash + Objects.hashCode(this.nombre);
-        hash = 67 * hash + this.cp;
-        hash = 67 * hash + Objects.hashCode(this.telefono);
+        hash = 71 * hash + Objects.hashCode(this.id);
+        hash = 71 * hash + Objects.hashCode(this.correo);
+        hash = 71 * hash + Objects.hashCode(this.pass);
+        hash = 71 * hash + Objects.hashCode(this.nombre);
+        hash = 71 * hash + Objects.hashCode(this.direccion);
+        hash = 71 * hash + this.cp;
+        hash = 71 * hash + Objects.hashCode(this.facebook);
+        hash = 71 * hash + Objects.hashCode(this.twitter);
+        hash = 71 * hash + Objects.hashCode(this.telefono);
+        hash = 71 * hash + Objects.hashCode(this.fechaRegistro);
         return hash;
     }
 
@@ -154,16 +170,22 @@ public class Usuario implements Serializable {
         if (!Objects.equals(this.correo, other.correo)) return false;
         if (!Objects.equals(this.pass, other.pass)) return false;
         if (!Objects.equals(this.nombre, other.nombre)) return false;
+        if (!Objects.equals(this.direccion, other.direccion)) return false;
+        if (!Objects.equals(this.facebook, other.facebook)) return false;
+        if (!Objects.equals(this.twitter, other.twitter)) return false;
         if (!Objects.equals(this.telefono, other.telefono)) return false;
         if (!Objects.equals(this.id, other.id)) return false;
+        if (!Objects.equals(this.fechaRegistro, other.fechaRegistro)) return false;
         return true;
     }
 
     @Override
     public String toString() {
         return "Usuario{" + "id=" + id + ", correo=" + correo + ", pass=" + pass
-                + ", nombre=" + nombre + ", direccion=" + direccion + ", cp=" + cp 
-                + ", facebook=" + facebook + ", twitter=" + twitter + ", telefono=" + telefono + '}';
+                + ", nombre=" + nombre + ", direccion=" + direccion 
+                + ", cp=" + cp + ", facebook=" + facebook + ", twitter=" 
+                + twitter + ", telefono=" + telefono + ", fecha-registro: " 
+                + fechaRegistro + '}';
     }
 
     

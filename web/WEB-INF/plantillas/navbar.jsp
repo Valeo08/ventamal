@@ -55,7 +55,11 @@
             
             <%-- Solo disponible cuando el usuario está logueado --%>
             <% if (logueado) { %>
-            <ul class="navbar-nav" id="nav-logout">
+            <ul class="navbar-nav" id="nav-izquierda">
+                <li class="nav-item">
+                    <a class="nav-link" href="perfil?uid=<%=session.getAttribute("id-usuario")%>">Profile</a>
+                </li>
+                
                 <li class="nav-item">
                     <a class="nav-link" href="#modal-logout" data-bs-toggle="modal" 
                        data-bs-target="#modal-logout">Log out</a>

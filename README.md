@@ -1,10 +1,10 @@
 <h1>Ventamal</h1>
-<p>Ventamal is a sample project of an e-commerce web application developed with Java EE with a Glassfish server for the DB. It can be used as a starting point for such an application, as it implements fundamental elements for the case.</p>
+<p>Ventamal is a sample project of an e-commerce web application developed with Java EE and a Glassfish server for the DB. It can be used as a starting point for such an application, as it implements fundamental elements for the case.</p>
 
 - [ ] User accounts.
 	- [X] Sign up and log in systems.
 	- [X] Products of interest for the user.
-	- [ ] Profile page.
+	- [X] Profile page.
 	- [ ] Product management: edit, remove.
 - [X] Publication of products.
 - [X] Product detail page.
@@ -14,7 +14,7 @@
 	- [ ] User, comment and product reporting system.
 	- [ ] Account management: users and comments.
 	- [ ] Product management.
-- [ ] Sellers public contact information for registered users.
+- [X] Sellers public contact information for registered users.
 - [ ] Management of sold products.
 - [ ] Better images for products, which includes allowing more (Optional).
 

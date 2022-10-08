@@ -65,7 +65,7 @@ public class FiltroUsuarios implements Filter {
         
         // Aplicar el filtro
         if (session.getAttribute("usuario") == null 
-                || accion.equals("/logout"))
+                || accion.equals("/logout") || accion.equals("/perfil"))
             chain.doFilter(request, response);
         else
             httpResp.sendRedirect("inicio");

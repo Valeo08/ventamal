@@ -41,6 +41,7 @@
         <url-pattern>/comprobar-tlf</url-pattern>
         <url-pattern>/logout</url-pattern>
         <url-pattern>/registrar</url-pattern>
+        <url-pattern>/perfil</url-pattern>
     </servlet-mapping>
     <servlet-mapping>
         <servlet-name>SevInicio</servlet-name>

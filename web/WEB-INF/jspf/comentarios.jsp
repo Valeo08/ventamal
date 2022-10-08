@@ -27,7 +27,7 @@ List<Comentario> comentarios = (List<Comentario>)request.getAttribute("comentari
     SimpleDateFormat sdf2 = new SimpleDateFormat(formato2);
     Date fecha = new Date(c.getFechaPublicacion().getTime());
     %>
-    <p class="fs-5 mb-2"><%=c.getUsuario().getNombre()%></p>
+    <p class="fs-5 mb-2"><a class="link-primary" href="perfil?uid=<%=c.getUsuario().getId()%>"><%=c.getUsuario().getNombre()%></a></p>
     <p class="fs-6 p-2 mb-1"><%=c.getTexto()%></p>
     <p class="small fw-light">Posted on <%=sdf1.format(fecha)%> at <%=sdf2.format(fecha)%></p>
 </div>

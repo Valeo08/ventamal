@@ -34,7 +34,9 @@ import javax.persistence.Table;
     @NamedQuery(name="Articulo.findByPrecioMax",
         query="SELECT a FROM Articulo a WHERE a.precio <= :precioMax"),
     @NamedQuery(name="Articulo.findByRangoPrecios",
-        query="SELECT a FROM Articulo a WHERE a.precio >= :precioMin AND a.precio <= :precioMax")
+        query="SELECT a FROM Articulo a WHERE a.precio >= :precioMin AND a.precio <= :precioMax"),
+    @NamedQuery(name="Articulo.findByVendedor",
+        query="SELECT a FROM Articulo a WHERE a.usuario.id = :uid")
 })
 public class Articulo implements Serializable {
 

@@ -5,7 +5,7 @@ function actualizarBotonInteres() {
     let idArticulo = document.getElementById("id-articulo");
     if (idArticulo !== null) {
         let btn = document.getElementById("boton-interes");
-        let btnP1 = "<button class=\"btn btn-primary mt-3\" ";
+        let btnP1 = "<button class=\"btn btn-primary w-100\" ";
         let btnP2 = ">";
         let btnP3 = "</button>";
         let btnV = "";

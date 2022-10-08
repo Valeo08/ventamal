@@ -29,7 +29,7 @@ body {
     margin-right: 1em;
     font-weight: 600;
 }
-#nav-logout {
+#nav-izquierda {
     display: flex;
     flex-grow: 1;
     justify-content: flex-end;
@@ -75,6 +75,15 @@ body {
 .form-control:focus,.form-control:active:focus,
 .form-select:focus, .form-select:active:focus {
     box-shadow: 0 0 0 0.10rem #27AE60 !important;
+}
+
+.link-primary, .link-primary:link, .link-primary:visited {
+    text-decoration: none;
+    color: #15803D !important;
+}
+.link-primary:hover, .link-primary:active, .link-primary:focus {
+    text-decoration: none;
+    color: #065F46 !important;
 }
 
 .card {

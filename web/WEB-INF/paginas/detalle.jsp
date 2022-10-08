@@ -61,7 +61,8 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                         </div>
 
                         <div class="col-xl-6 col-md-6 col-12 mb-3">
-                            <p><strong>Published by: </strong><%=a.getUsuario().getNombre()%></p>
+                            <p><strong>Published by: </strong><a class="link-primary" 
+                                href="perfil?uid=<%=a.getUsuario().getId()%>"><%=a.getUsuario().getNombre()%></a></p>
                             <p><strong>Postal code: </strong><%=a.getUsuario().getCp()%></p>
                             <br>
                             <p><strong>Category: </strong><%=a.getCategoria()%></p>
@@ -74,7 +75,66 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                             <p><strong>Description:</strong></p>
                             <p><%=(a.getDescripcion() != null && !a.getDescripcion().equals("")) ? a.getDescripcion() : "No product description was provided."%></p>
                             <% if (session.getAttribute("usuario") != null) {%>
-                            <div id="boton-interes"></div>
+                            
+                            <div class="row justify-content-start">
+                                <% if (session.getAttribute("id-usuario") == a.getUsuario().getId()) { %>
+                                <div class="mt-2 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                                    <button class="w-100 btn btn-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#editar-info" aria-controls="editar-info">Edit product information</button>
+                                    
+                                    <div class="modal fade" id="editar-info" tabindex="-1" aria-labelledby="editar-info-label" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="editar-info-label">Confirm</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    Do you want to edit product information?
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                                    <a class="btn btn-primary" href="#">Edit</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <% } %>
+                                
+                                <div id="info-vendedor-wrapper" class="mt-2 col-xl-4 col-lg-4 col-md-4 col-sm-12">
+                                    <button class="w-100 btn btn-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#info-contacto" aria-controls="info-contacto">Seller's contact information</button>
+
+                                    <div class="modal fade" id="info-contacto" tabindex="-1" aria-labelledby="info-contacto-label" aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h1 class="modal-title fs-5" id="info-contacto-label">Seller's contact information</h1>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                                </div>
+
+                                                <div class="modal-body">
+                                                    <p>Name: <span class="fw-bold"><%=a.getUsuario().getNombre()%></span></p>
+                                                    <p>Email: <a class="fw-bold text-decoration-none link-primary" 
+                                                                 href="mailto:<%=a.getUsuario().getCorreo()%>?Subject=Ventamal%20-%20<%=a.getNombre()%>"><%=a.getUsuario().getCorreo()%></a></p>
+                                                    <p>Phone number: <a class="fw-bold phone-number text-decoration-none link-primary" 
+                                                                        href="tel:<%=a.getUsuario().getTelefono()%>"><%=a.getUsuario().getTelefono()%></a></p>
+                                                </div>
+
+                                                <div class="modal-footer">
+                                                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Close</button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                                
+                                <div id="boton-interes" class="mt-2 col-xl-4 col-lg-4 col-md-4 col-sm-12"></div>
+                            </div>
+                            
                             <%}%>
                         </div>
                         
@@ -102,7 +162,7 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                                 
                                 <textarea class="form-control mb-3" id="texto" name="texto" rows="3"></textarea>
                                 
-                                <input type="submit" class="btn btn-primary" value="Post" onclick="return validar();" />
+                                <input type="submit" class="btn btn-primary" value="Post comment" onclick="return validar();" />
                             </form>
                             <%}%>
                         </div>

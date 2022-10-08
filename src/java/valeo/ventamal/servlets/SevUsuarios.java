@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.sql.Timestamp;
+import java.util.Date;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -19,12 +21,14 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import valeo.ventamal.entidades.Articulo;
 
 /**
  * @author Valeo
  */
 @WebServlet(name = "SevUsuarios", urlPatterns = {"/iniciar-sesion", "/alta",
-    "/login", "/comprobar-email", "/comprobar-tlf", "/registrar", "/logout"})
+    "/login", "/comprobar-email", "/comprobar-tlf", "/registrar", "/perfil",
+    "/logout"})
 public class SevUsuarios extends HttpServlet {
 
     @PersistenceContext(unitName = "ventamalPU")
@@ -49,7 +53,9 @@ public class SevUsuarios extends HttpServlet {
         String vista;
         
         TypedQuery<Usuario> query;
+        TypedQuery<Articulo> queryArticulo;
         List<Usuario> lr;
+        List<Articulo> la;
         Usuario u;
         HttpSession session = request.getSession();
         boolean inicioCorrecto = false;
@@ -134,6 +140,7 @@ public class SevUsuarios extends HttpServlet {
                 String regFacebook = request.getParameter("facebook");
                 String regTwitter = request.getParameter("twitter");
                 String regTlf = request.getParameter("telefono");
+                Timestamp regFechaRegistro = new Timestamp(new Date().getTime());
                 
                 // Hacer hash a la contraseña
                 regPass = hashPassword(regRawPass);
@@ -165,6 +172,7 @@ public class SevUsuarios extends HttpServlet {
                         u.setNombre(regNombre);
                         u.setCp(regCp);
                         u.setTelefono(regTlf);
+                        u.setFechaRegistro(regFechaRegistro);
                         u.setDireccion(regDireccion);
                         u.setFacebook(regFacebook);
                         u.setTwitter(regTwitter);
@@ -193,6 +201,32 @@ public class SevUsuarios extends HttpServlet {
                     request.setAttribute("msj", msjError);
                     vista = "/WEB-INF/paginas/registrar.jsp";
                 }
+                break;
+            case "/perfil": // Ver página de perfil
+                String detId = request.getParameter("uid");
+                boolean usuarioCorrecto = false;
+                
+                if (detId != null && !detId.equals("")) {
+                    query = em.createNamedQuery("Usuario.findById", Usuario.class);
+                    query.setParameter("id", Integer.parseInt(detId));
+                    lr = query.getResultList();
+                    
+                    if (lr.size() > 0) {
+                        u = lr.get(0);
+                        request.setAttribute("usuario-perfil", u);
+                        
+                        queryArticulo = em.createNamedQuery("Articulo.findByVendedor", Articulo.class);
+                        queryArticulo.setParameter("uid", u.getId());
+                        la = queryArticulo.getResultList();
+                        request.setAttribute("articulos", la);
+                        
+                        usuarioCorrecto = true;
+                    }
+                }
+                
+                if (!usuarioCorrecto) request.setAttribute("msj", "User not found.");
+   
+                vista = "/WEB-INF/paginas/perfil.jsp";
                 break;
             case "/logout": // Cerrar sesión
                 if (session.getAttribute("usuario") != null)
