@@ -4,7 +4,6 @@
 
 <%
 
-String msj = (String)request.getAttribute("msj");
 Usuario usuarioPerfil = (Usuario)request.getAttribute("usuario-perfil");
 
 %>
@@ -30,20 +29,45 @@ Usuario usuarioPerfil = (Usuario)request.getAttribute("usuario-perfil");
         
         <div class="container-fluid" id="main-wrapper">
             <div class="row">
+                <jsp:include page="/WEB-INF/plantillas/error-msg.jsp"/>
+                
+                <% if (usuarioPerfil != null) { %>
                 <div class="col-sm-12 col-md-10 offset-md-1 col-xl-6 offset-xl-3">
-                    <% if (msj != null) {%>
-                    <div id="perfil-error" class="mt-2 alert alert-danger" role="alert">
-                        <span class="fw-bold">Error</span>: <%=msj%>
-                    </div>
-                    <%}%>
-                    
-                    <% if (usuarioPerfil != null) { %>
-                    <div id="titulo">
-                        <h3 class="fs-3 fw-bolder"><%=usuarioPerfil.getNombre()%></h3>
+                    <div id="header-perfil" class="row">
+                        <div class="col-xl-9 col-lg-10 col-md-9 col-sm-12">
+                           <h3 class="fs-3 fw-bolder"><%=usuarioPerfil.getNombre()%></h3>
 
-                        <p class="small fst-italic fw-light mb-5">In Ventamal since 
-                            <%=DateManager.getNombreMes(usuarioPerfil.getFechaRegistro())%>  
-                            <%=DateManager.getAgno(usuarioPerfil.getFechaRegistro())%></p>
+                            <p class="small fst-italic fw-light mb-5">In Ventamal since 
+                                <%=DateManager.getNombreMes(usuarioPerfil.getFechaRegistro())%>  
+                                <%=DateManager.getAgno(usuarioPerfil.getFechaRegistro())%></p> 
+                        </div>
+                        
+                        <% if (session.getAttribute("usuario") != null && session.getAttribute("id-usuario") == usuarioPerfil.getId()) { %>
+                        <div class="col-xl-3 col-lg-2 col-md-3 col-sm-12 mb-4">
+                            <button class="w-100 btn btn-primary" type="button" data-bs-toggle="modal"
+                                data-bs-target="#info-contacto" aria-controls="info-contacto">Edit profile</button>
+
+                            <div class="modal fade" id="info-contacto" tabindex="-1" aria-labelledby="info-contacto-label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="info-contacto-label">Edit contact information</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                             Do you want to edit your contact information?
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                            <a class="btn btn-primary" href="#">Edit</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
                     </div>
                     
                     <div id="contacto" class="mb-5">
@@ -65,9 +89,16 @@ Usuario usuarioPerfil = (Usuario)request.getAttribute("usuario-perfil");
                             <jsp:include page="/WEB-INF/jspf/articulos-filtrados.jsp"/>
                         </div>
                     </div>
-                        
-                    <% } %>
                 </div>
+                <% } %>
+                
+                <%-- Barra lateral --%>
+                <% if (session.getAttribute("usuario") == null) {%>
+                <div class="col-sm-12 col-md-6 offset-md-3 col-xl-3 offset-xl-0 px-5 pt-5">
+                    <jsp:include page="/WEB-INF/plantillas/lateral.jsp"/>
+                </div>
+                <% } %>
+                <%-- Barra lateral --%>
             </div>
         </div>
         

@@ -8,15 +8,18 @@ var estados = ["New", "Pre-owned", "Deteriorated", "Poor condition"];
 
 /* Poblar el input de las categorías y estados disponibles */
 window.onload = function() {
-    let cs = document.getElementById("categoria");
-    
     let i;
+    
+    let cs = document.getElementById("categoria");
     for (i = 0; i < categorias.length; i++) {
         let opt = document.createElement("option");
         opt.value = categorias[i];
         opt.innerHTML = categorias[i];
         cs.append(opt);
     }
+    let tempCategoria = document.getElementById("temp-categoria");
+    cs.value = tempCategoria.value;
+    tempCategoria.remove();
     
     let es = document.getElementById("estado");
     for (i = 0; i < estados.length; i++) {
@@ -25,6 +28,9 @@ window.onload = function() {
         opt.innerHTML = estados[i];
         es.append(opt);
     }
+    let tempEstado = document.getElementById("temp-estado");
+    es.value = tempEstado.value;
+    tempEstado.remove();
 };
 
 /* Prevenir fallos en el formulario */
@@ -129,4 +135,18 @@ function validar() {
     return valido;
 }
 
-
+/* Confirmar eliminación */
+document.getElementById("texto-confirmar").addEventListener("input", function() {
+    let activo = (this.value === "DELETE");
+    let boton = document.getElementById("boton-confirmar");
+    
+    if (activo) {
+        boton.classList.remove("disabled");
+        boton.setAttribute("tabindex", "1");
+    } else {
+        boton.classList.add("disabled");
+        boton.setAttribute("aria-disabled", "-1");
+    }
+    
+    boton.setAttribute("aria-disabled", "" + !activo);
+}, false);

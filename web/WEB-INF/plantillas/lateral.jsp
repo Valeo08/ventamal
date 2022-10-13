@@ -11,7 +11,7 @@
 <% if (logueado) { %>
 
 <h3 class="fs-4">
-    Hola, <%=session.getAttribute("usuario")%>
+    Hi, <%=session.getAttribute("usuario")%>
 </h3>
 
 <p class="fs-5 me-4">

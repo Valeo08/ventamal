@@ -4,7 +4,6 @@
 
 <%
 
-String msj = (String)request.getAttribute("msj");
 Articulo a = (Articulo)request.getAttribute("articulo");
 
 %>
@@ -34,33 +33,31 @@ Articulo a = (Articulo)request.getAttribute("articulo");
         
         <div class="container-fluid" id="main-wrapper">
             <div class="row">
+                <jsp:include page="/WEB-INF/plantillas/error-msg.jsp"/>
+                
+                <% if (a != null) {%>
                 <div class="col-sm-12 col-md-10 offset-md-1 col-xl-6 offset-xl-3">
-                    <% if (msj != null) {%>
-                    <div id="articulo-error" class="mt-2 alert alert-danger" role="alert">
-                        <%=msj%>
-                    </div>
-                    <%}%>
-                    
-                    <% if (a != null) {%>
                     <h3 class="fs-3 fw-bold"><%=a.getNombre()%></h3>
                     
                     <div class="row row-cols-xl-3 row-cols-md-2 row-cols-1 mb-3">
-                        <div class="col-xl-4 col-md-4 offset-md-0 col-8 offset-2 mb-3">
+                        <div class="col-xl-4 col-md-4 offset-md-0 col-8 offset-2 mb-3 card p-0">
                             <% if (a.tieneImagen()) {%>
-                            <img class="card-img-top img-fluid rounded" src="img/<%=a.getId()%>.jpg" width="0.5em" height="0.5em"/>
+                            <img class="card-img-overlay img-fluid rounded card-img-overlay-custom 
+                                <%if(a.isVendido()) {%>img-vendido<%}%>" src="datos/<%=a.getUsuario().getId()%>/<%=a.getId()%>.jpg"/>
+                            
+                            <% if (a.isVendido()) {%>
+                            <div class="rotulo-vendido">SOLD</div>
+                            <%}%>
+                            
                             <%} else {%>
                             <%-- Placeholder para cuando no hay imágenes --%>
-                            <svg class="card-img-top img-fluid rounded" 
-                                    width="0.5em" height="0.5em" xmlns="http://www.w3.org/2000/svg" role="img" 
-                                    aria-label="Placeholder" preserveAspectRatio="xMidYMid slice" focusable="false">
-                                <title>Placeholder</title>
-                                <rect width="100%" height="100%" fill="#868e96"></rect>
-                                <text x="35%" y="50%" fill="#dee2e6" dy=".3em">No image</text>
-                            </svg>
+                            <div class="text-center rounded m-2 h-100 img-placeholder fs-4">
+                                <div class="my-auto">No image</div>
+                            </div>
                             <%}%>
                         </div>
 
-                        <div class="col-xl-6 col-md-6 col-12 mb-3">
+                        <div class="col-xl-6 col-md-6 col-12 mb-3 px-5 py-3">
                             <p><strong>Published by: </strong><a class="link-primary" 
                                 href="perfil?uid=<%=a.getUsuario().getId()%>"><%=a.getUsuario().getNombre()%></a></p>
                             <p><strong>Postal code: </strong><%=a.getUsuario().getCp()%></p>
@@ -68,8 +65,38 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                             <p><strong>Category: </strong><%=a.getCategoria()%></p>
                             <p><strong>Condition: </strong><%=(a.getEstado() != null && !a.getEstado().equals("")) ? a.getEstado() : "Unspecified"%></p>
                             <p><strong>Year of acquisition (approx.): </strong><%=(a.getAnoAdquisicion() > 0) ? a.getAnoAdquisicion() : "Unspecified"%></p>
-                            <p><strong>Price </strong><%=a.getPrecio()%> &euro;</p>
+                            
+                            <p class="fs-5"><strong>Price: </strong><%=a.getPrecio()%> &euro;
+                                <%if (a.isVendido()) {%><span class="ms-2 badge bg-dark text-bg-dark fs-5">SOLD</span><%}%>
+                            </p>
                         </div>
+                        
+                        <% if (session.getAttribute("id-usuario") == a.getUsuario().getId() && !a.isVendido()) { %>
+                        <div class="col-xl-2 col-md-2 col-12 mb-3">
+                            <button class="w-100 btn btn-primary" type="button" data-bs-toggle="modal"
+                                            data-bs-target="#marcar-vendido" aria-controls="marcar-vendido">Mark as sold</button>
+                            
+                            <div class="modal fade" id="marcar-vendido" tabindex="-1" aria-labelledby="marcar-vendido-label" aria-hidden="true">
+                                <div class="modal-dialog">
+                                    <div class="modal-content">
+                                        <div class="modal-header">
+                                            <h1 class="modal-title fs-5" id="marcar-vendido-label">Confirm</h1>
+                                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                        </div>
+
+                                        <div class="modal-body">
+                                            Do you want to mark this product as sold?
+                                        </div>
+
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
+                                            <a class="btn btn-primary" href="vender-articulo?id=<%=a.getId()%>">Accept</a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <% } %>
 
                         <div class="col-xl-12 col-md-12 col-12 mb-4">
                             <p><strong>Description:</strong></p>
@@ -77,7 +104,7 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                             <% if (session.getAttribute("usuario") != null) {%>
                             
                             <div class="row justify-content-start">
-                                <% if (session.getAttribute("id-usuario") == a.getUsuario().getId()) { %>
+                                <% if (session.getAttribute("id-usuario") == a.getUsuario().getId() && !a.isVendido()) { %>
                                 <div class="mt-2 col-xl-4 col-lg-4 col-md-4 col-sm-12">
                                     <button class="w-100 btn btn-primary" type="button" data-bs-toggle="modal"
                                             data-bs-target="#editar-info" aria-controls="editar-info">Edit product information</button>
@@ -96,7 +123,7 @@ Articulo a = (Articulo)request.getAttribute("articulo");
 
                                                 <div class="modal-footer">
                                                     <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
-                                                    <a class="btn btn-primary" href="#">Edit</a>
+                                                    <a class="btn btn-primary" href="editar?id=<%=a.getId()%>">Edit</a>
                                                 </div>
                                             </div>
                                         </div>
@@ -167,8 +194,8 @@ Articulo a = (Articulo)request.getAttribute("articulo");
                             <%}%>
                         </div>
                     </div>
-                    <%}%>
                 </div>
+                <%}%>
                 
                 <%-- Barra lateral --%>
                 <div class="col-sm-12 col-md-6 offset-md-3 col-xl-3 offset-xl-0 px-5 pt-5">

@@ -59,6 +59,10 @@
         <url-pattern>/filtro</url-pattern>
         <url-pattern>/comentar</url-pattern>
         <url-pattern>/articulos-interes</url-pattern>
+        <url-pattern>/editar</url-pattern>
+        <url-pattern>/editar-articulo</url-pattern>
+        <url-pattern>/eliminar-articulo</url-pattern>
+        <url-pattern>/vender-articulo</url-pattern>
     </servlet-mapping>
     <session-config>
         <session-timeout>

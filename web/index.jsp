@@ -20,10 +20,10 @@
             <div class="row">
                 <div class="col-sm-12 col-md-8 offset-md-2 col-xl-6 offset-xl-3 pt-3 pb-5">
                     <h1 class="fs-1 text-center fw-bold">Ventamal</h1>
-                    <h3 class="fs-4 text-center">
+                    <h3 class="fs-3 text-center">
                         The best portal for buying and selling second-hand products.
                     </h3>
-                    
+
                     <div class="text-center mt-5">
                         <a href="articulos">
                             <button class="btn btn-primary btn-lg" type="button">See all products</button>

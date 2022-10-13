@@ -181,11 +181,15 @@ public class Usuario implements Serializable {
 
     @Override
     public String toString() {
-        return "Usuario{" + "id=" + id + ", correo=" + correo + ", pass=" + pass
-                + ", nombre=" + nombre + ", direccion=" + direccion 
-                + ", cp=" + cp + ", facebook=" + facebook + ", twitter=" 
-                + twitter + ", telefono=" + telefono + ", fecha-registro: " 
-                + fechaRegistro + '}';
+        return "Usuario{" + "id=" + id + ", correo=" + correo 
+                + ", pass=" + pass
+                + ", nombre=" + nombre 
+                + ", direccion=" + direccion 
+                + ", cp=" + cp 
+                + ", facebook=" + facebook 
+                + ", twitter=" + twitter 
+                + ", telefono=" + telefono 
+                + ", fecha-registro: " + fechaRegistro + '}';
     }
 
     

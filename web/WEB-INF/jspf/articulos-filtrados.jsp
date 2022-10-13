@@ -10,27 +10,30 @@ List<Articulo> articulos = (List<Articulo>)request.getAttribute("articulos");
 
 <% if (articulos != null && !articulos.isEmpty()) { for (Articulo a : articulos) {%>
 <div class="col mb-2">
-    <div class="card h-100">
-        <a href="articulo?id=<%=a.getId()%>" class="text-decoration-none text-reset">
+    <a href="articulo?id=<%=a.getId()%>" class="text-decoration-none text-reset">
+        <div class="card h-100">
             <% if (a.tieneImagen()) {%>
-            <img class="card-img-top img-fluid rounded" src="img/<%=a.getId()%>.jpg"
-                 width="0.5em" height="0.5em"/>
+            <img class="card-img-overlay img-fluid rounded card-img-custom
+                 <%if(a.isVendido()) {%>img-vendido<%}%>" src="datos/<%=a.getUsuario().getId()%>/<%=a.getId()%>.jpg"/>
             <%}%>
+            
+            <% if (a.isVendido()) {%>
+            <div class="rotulo-vendido">SOLD</div>
+            <%}%>
+            
             <div class="card-body">
-              <h5 class="card-title fw-bold"><%=a.getNombre()%></h5>
-              <p class="card-text">
-                  Postal code: <%=a.getUsuario().getCp()%>
-                  <br>
-                  Price: <%=a.getPrecio()%> &euro;
+                <h5 class="card-title fw-bold fs-4"><%=a.getNombre()%></h5>
+                <p class="card-text">
+                    <span class="fs-5">Price: <%=a.getPrecio()%> &euro;</span>
 
-                  <% if (!a.tieneImagen()) {%>
-                  <br><br>
-                  <%=a.getDescripcion()%>
-                  <%}%>
-              </p>
+                    <% if (!a.tieneImagen()) {%>
+                    <br><br>
+                    <%=a.getDescripcion()%>
+                    <%}%>
+                </p>
             </div>
-        </a>
-    </div>
+        </div>
+    </a>
 </div>
 <%}} else { %>
 <div class="col-12 mb-2">No matching products were found.</div>

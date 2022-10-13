@@ -94,7 +94,80 @@ body {
     transform: translateY(-2px);
     box-shadow: 0 2px 10px 0 rgb(37 50 56 / 10%);
 }
+.card-custom {
+    width: 25em !important;
+}
+.card-img-custom {
+    position: relative;
+}
+.card-img-overlay-custom {
+    width: 100%;
+    position: relative;
+    top: 50%; transform:
+    translateY(-50%);
+}
+
+.img-placeholder {
+    background-color: #BDC3C7;
+    color: #FFF;
+    min-height: 8.5em;
+}
+.img-placeholder > div {
+    position: relative;
+    top: 50%;
+    transform: translateY(-50%);
+}
+
+.img-vendido {
+    -webkit-filter: grayscale(100%); /* Safari 6.0 - 9.0 */
+    filter: grayscale(100%);
+}
+.rotulo-vendido {
+    position: absolute;
+    z-index: 100;
+    left: 50%;
+    top: 50%;
+    font-size: 4rem;
+    color: #28AE60;
+    transform: translateX(-50%) translateY(-50%) rotateZ(345deg);
+}
 
 textarea#descripcion, textarea#texto {
   resize: none !important;
+}
+
+/* XS screens*/
+@media screen and (min-width: 0) {
+    
+}
+
+/* SM screens*/
+@media screen and (min-width: 576px) {
+    
+}
+
+/* MD screens*/
+@media screen and (min-width: 768px) {
+    .card-img-custom {
+        max-height: 20em;
+        width: max-content;
+        position: relative;
+        left: 50%;
+        transform: translateX(-50%);
+    }
+}
+
+/* LG screens*/
+@media screen and (min-width: 992px) {
+    
+}
+
+/* XL screens*/
+@media screen and (min-width: 1200px) {
+    
+}
+
+/* XXL screens*/
+@media screen and (min-width: 1400px) {
+    
 }

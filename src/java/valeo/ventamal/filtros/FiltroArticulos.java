@@ -69,6 +69,7 @@ public class FiltroArticulos implements Filter {
             case "/articulos":
             case "/articulo":
             case "/filtro":
+            case "/editar":
                 accionValida = true;
                 break;
             default:

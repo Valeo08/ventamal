@@ -78,7 +78,7 @@
                         Do you want to close the current session?
                         </div>
                         <div class="modal-footer">
-                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                          <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Cancel</button>
                           <a class="btn btn-primary" href="logout">Log out</a>
                         </div>
                     </div>

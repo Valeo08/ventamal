@@ -41,14 +41,16 @@ function quitarInteres() {
 /* Poblar el input de las opciones de visibilidad de comentario */
 window.onload = function() {
     let vs = document.getElementById("visibilidad");
-    let opcionesSel = ["Public", "Only for the seller", "Private"];
-    let opciones = ["publico", "vendedor", "privado"];
-    let i;
-    for (i = 0; i < opcionesSel.length; i++) {
-        let opt = document.createElement("option");
-        opt.value = opciones[i];
-        opt.innerHTML = opcionesSel[i];
-        vs.append(opt);
+    if (vs !== null) {
+        let opcionesSel = ["Public", "Only for the seller", "Private"];
+        let opciones = ["publico", "vendedor", "privado"];
+        let i;
+        for (i = 0; i < opcionesSel.length; i++) {
+            let opt = document.createElement("option");
+            opt.value = opciones[i];
+            opt.innerHTML = opcionesSel[i];
+            vs.append(opt);
+        }
     }
     
     let idArticulo = document.getElementById("id-articulo");

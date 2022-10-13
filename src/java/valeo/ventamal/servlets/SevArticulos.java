@@ -34,7 +34,8 @@ import javax.servlet.http.Part;
  */
 @WebServlet(name = "SevArticulos", urlPatterns = {"/articulos", "/articulo",
     "/publicar", "/interes", "/agregar-articulo", "/filtro", "/comentar",
-    "/articulos-interes"})
+    "/articulos-interes", "/editar", "/editar-articulo", "/eliminar-articulo",
+    "/vender-articulo"})
 @MultipartConfig
 public class SevArticulos extends HttpServlet {
 
@@ -59,6 +60,7 @@ public class SevArticulos extends HttpServlet {
         String accion = request.getServletPath();
         HttpSession session = request.getSession();
         String vista = null;
+        boolean redirigido = false;
         
         TypedQuery<Articulo> query;
         List<Articulo> lr;
@@ -133,10 +135,10 @@ public class SevArticulos extends HttpServlet {
                     numFiltros++;
                 }
                 
-                String cl = "SELECT a FROM Articulo a";
+                String cl = "SELECT a FROM Articulo a WHERE a.visible = true";
                 String order = " ORDER BY a.fechaSubida DESC";
                 query = em.createQuery(cl 
-                        + (clFiltro.equals("") ? "" : " WHERE " + clFiltro) + order,
+                        + (clFiltro.equals("") ? "" : " AND " + clFiltro) + order,
                         Articulo.class);
                 
                 lr = query.getResultList();
@@ -153,25 +155,28 @@ public class SevArticulos extends HttpServlet {
                     query.setParameter("id", Integer.parseInt(detId));
                     lr = query.getResultList();
                     
-                    if (lr.size() > 0) {
+                    if (!lr.isEmpty()) {
                         a = lr.get(0);
-                        request.setAttribute("articulo", a);
+                        
+                        if (a.isVisible()) {
+                            request.setAttribute("articulo", a);
 
-                        if (session.getAttribute("id-usuario") != null) {
-                            Long detIdUsuario = (Long)session.getAttribute("id-usuario");
-                            queryComentario = em.createNamedQuery(
-                                    "Comentario.findVisibles", Comentario.class);
-                            queryComentario.setParameter("idArticulo", a.getId());
-                            queryComentario.setParameter("idUsuario", detIdUsuario);
-                            lc = queryComentario.getResultList();
-                        } else {
-                            queryComentario = em.createNamedQuery(
-                                    "Comentario.findPublicos", Comentario.class);
-                            queryComentario.setParameter("idArticulo", a.getId());
-                            lc = queryComentario.getResultList();
+                            if (session.getAttribute("id-usuario") != null) {
+                                Long detIdUsuario = (Long)session.getAttribute("id-usuario");
+                                queryComentario = em.createNamedQuery(
+                                        "Comentario.findVisibles", Comentario.class);
+                                queryComentario.setParameter("idArticulo", a.getId());
+                                queryComentario.setParameter("idUsuario", detIdUsuario);
+                                lc = queryComentario.getResultList();
+                            } else {
+                                queryComentario = em.createNamedQuery(
+                                        "Comentario.findPublicos", Comentario.class);
+                                queryComentario.setParameter("idArticulo", a.getId());
+                                lc = queryComentario.getResultList();
+                            }
+                            request.setAttribute("comentarios", lc);
+                            artCorrecto = true;
                         }
-                        request.setAttribute("comentarios", lc);
-                        artCorrecto = true;
                     }
                 }
                 
@@ -213,14 +218,14 @@ public class SevArticulos extends HttpServlet {
                     queryUsuario.setParameter("id", comIdUsuario);
                     lu = queryUsuario.getResultList();
                     
-                    if (lu.size() > 0) {
+                    if (!lu.isEmpty()) {
                         u = lu.get(0);
                         
                         query = em.createNamedQuery("Articulo.findById", Articulo.class);
                         query.setParameter("id", comIdArticulo);
                         lr = query.getResultList();
                         
-                        if (lr.size() > 0) {
+                        if (!lr.isEmpty()) {
                             a = lr.get(0);
                             
                             c = new Comentario();
@@ -296,6 +301,8 @@ public class SevArticulos extends HttpServlet {
                     a.setPrecio(AgPrecio);
                     a.setFechaSubida(AgFechaSubida);
                     a.setTieneImagen((AgImg.getSize() > 0));
+                    a.setVisible(true);
+                    a.setVendido(false);
                     
                     queryUsuario = em.createNamedQuery("Usuario.findById", Usuario.class);
                     queryUsuario.setParameter("id", (Long)session.getAttribute("id-usuario"));
@@ -312,33 +319,9 @@ public class SevArticulos extends HttpServlet {
                     lr = query.getResultList();
                     
                     // Si se ha subido una imagen, guardarla
-                    if (AgImg.getSize() > 0) {
-                        String relativePathFolder = "img";
-                        String absolutePathFolder = getServletContext().getRealPath(relativePathFolder);
-
-                        File folder = new File(absolutePathFolder);
-                        if (!folder.exists()) folder.mkdir();         
-
-                        // La imagen tendrá como nombre su ID
-                        long AgCod = 0;
-                        if (lr.size() > 0) AgCod = lr.get(0).getId();
-                        
-                        //System.out.println(absolutePathFolder + File.separator + AgCod + ".jpg");
-                        File f = new File(absolutePathFolder + File.separator + AgCod + ".jpg");
-
-                        InputStream filecontent;
-                        try (OutputStream p = new FileOutputStream(f)) {
-                            filecontent = AgImg.getInputStream();
-                            //System.out.println("Tam: " +  filePart.getSize());
-                            
-                            int read;
-                            final byte[] bytes = new byte[1024];
-                            while ((read = filecontent.read(bytes)) != -1) {
-                                p.write(bytes, 0, read);
-                            }
-                        }
-                        filecontent.close();
-                    }
+                    uploadImage(AgImg, "datos/" 
+                            + a.getUsuario().getId() + "/", 
+                            "" + lr.get(0).getId());
                     
                     // Mostrar la vista con todos los artículos
                     request.setAttribute("articulos", lr);
@@ -361,7 +344,7 @@ public class SevArticulos extends HttpServlet {
                     for (int i : aid) lid.add(i);
                     
                     query = em.createQuery(
-                            "SELECT a FROM Articulo a WHERE a.id IN :lid", Articulo.class);
+                            "SELECT a FROM Articulo a WHERE a.visible = true AND a.id IN :lid", Articulo.class);
                     query.setParameter("lid", lid);
                     lr = query.getResultList();
                     request.setAttribute("articulos", lr);
@@ -369,12 +352,173 @@ public class SevArticulos extends HttpServlet {
                 
                 vista = "/WEB-INF/jspf/articulos-filtrados.jsp";
                 break;
+            case "/editar":
+                if (session.getAttribute("usuario") == null) {
+                    response.sendRedirect("inicio");
+                    redirigido = true;
+                }
+                
+                detId = request.getParameter("id");
+                artCorrecto = false;
+                
+                if (detId != null && !detId.equals("")) {
+                    query = em.createNamedQuery("Articulo.findById", Articulo.class);
+                    query.setParameter("id", Integer.parseInt(detId));
+                    lr = query.getResultList();
+                    
+                    if (!lr.isEmpty()) {
+                        a = lr.get(0);
+                        
+                        if (session.getAttribute("id-usuario") == a.getUsuario().getId()) {
+                            request.setAttribute("articulo", a);
+                            artCorrecto = true;
+                        }
+                    }
+                }
+                
+                if (!artCorrecto) request.setAttribute("msj", "Product not found.");
+                vista = "/WEB-INF/paginas/editar.jsp";
+                break;
+            case "/editar-articulo":
+                if (session.getAttribute("usuario") == null) {
+                    response.sendRedirect("inicio");
+                    redirigido = true;
+                }
+                
+                a = null;
+                detId = request.getParameter("id");
+                boolean edicionArtCorrecta = false;
+                if (detId != null && !detId.equals("")) {
+                    query = em.createNamedQuery("Articulo.findById", Articulo.class);
+                    query.setParameter("id", Long.parseLong(detId));
+                    lr = query.getResultList();
+                    
+                    if (!lr.isEmpty()) {
+                        a = lr.get(0);
+                        
+                        if (session.getAttribute("id-usuario") == a.getUsuario().getId()) {
+                            String EdNombreArt = request.getParameter("nombre-art");
+                            String EdCategoria = request.getParameter("categoria");
+                            String EdDescripcion = request.getParameter("descripcion");
+                            String EdEstado = request.getParameter("estado");
+                            final Part EdImg = request.getPart("imagen");
+
+                            int EdAnoAdquision;
+                            try {
+                                EdAnoAdquision = Integer.parseInt(request.getParameter("ano-adquisicion"));
+                            } catch (NumberFormatException e) {
+                                EdAnoAdquision = -1;
+                            }
+                            float EdPrecio;
+                            try {
+                                EdPrecio = Float.parseFloat(request.getParameter("precio"));
+                            } catch (NumberFormatException e) {
+                                EdPrecio = -1f;
+                            }
+
+                            if (EdNombreArt != null && !EdNombreArt.equals("") 
+                                && EdCategoria != null && !EdCategoria.equals("")
+                                && EdPrecio != -1f) {
+
+                                a.setNombre(EdNombreArt);
+                                a.setCategoria(EdCategoria);
+                                a.setDescripcion(EdDescripcion);
+                                a.setEstado(EdEstado);
+                                a.setAnoAdquisicion(EdAnoAdquision);
+                                a.setPrecio(EdPrecio);
+                                a.setTieneImagen(a.tieneImagen() || (EdImg.getSize() > 0));
+
+                                // Si se ha subido una imagen, guardarla
+                                uploadImage(EdImg, "datos/" 
+                                        + a.getUsuario().getId() + "/", 
+                                        "" + lr.get(0).getId());
+
+                                update(a);
+                                edicionArtCorrecta = true;
+                            }
+                        }
+                    }
+                }
+                
+                if (edicionArtCorrecta) {
+                    if (a != null) {
+                        request.setAttribute("articulo", a);
+                        request.setAttribute("id", a.getId());
+                    }
+                    vista = "/WEB-INF/paginas/detalle.jsp";
+                } else {
+                    request.setAttribute("msj", "Product not found.");
+                    vista = "/WEB-INF/paginas/editar.jsp";
+                }
+                
+                break;
+            case "/eliminar-articulo":
+                if (session.getAttribute("usuario") == null) {
+                    response.sendRedirect("inicio");
+                    redirigido = true;
+                }
+                
+                detId = request.getParameter("id");
+                boolean eliminacionCorrecta = false;
+                if (detId != null && !detId.equals("")) {
+                    query = em.createNamedQuery("Articulo.findById", Articulo.class);
+                    query.setParameter("id", Long.parseLong(detId));
+                    lr = query.getResultList();
+                    
+                    if (!lr.isEmpty()) {
+                        a = lr.get(0);
+                        
+                        if (session.getAttribute("id-usuario") == a.getUsuario().getId()) {
+                            a.setVisible(false);
+                            update(a);
+                            eliminacionCorrecta = true;
+                        }
+                    }
+                }
+                
+                if (eliminacionCorrecta) {
+                    request.setAttribute("msj", "Product successfully removed.");
+                    vista = "/WEB-INF/paginas/editar.jsp";
+                } else {
+                    request.setAttribute("msj", "Product not found.");
+                    vista = "/WEB-INF/paginas/detalle.jsp";
+                }
+                
+                break;
+            case "/vender-articulo":
+                if (session.getAttribute("usuario") == null) {
+                    response.sendRedirect("inicio");
+                    redirigido = true;
+                }
+                
+                detId = request.getParameter("id");
+                boolean ventaCorrecta = false;
+                if (detId != null && !detId.equals("")) {
+                    query = em.createNamedQuery("Articulo.findById", Articulo.class);
+                    query.setParameter("id", Long.parseLong(detId));
+                    lr = query.getResultList();
+                    
+                    if (!lr.isEmpty()) {
+                        a = lr.get(0);
+                        
+                        if (session.getAttribute("id-usuario") == a.getUsuario().getId()) {
+                            a.setVendido(true);
+                            update(a);
+                            ventaCorrecta = true;
+                        }
+                    }
+                }
+                
+                if (ventaCorrecta) request.setAttribute("msj", "Product successfully marked as sold.");
+                else request.setAttribute("msj", "Product not found.");
+                vista = "/WEB-INF/paginas/detalle.jsp";
+                break;
         }
         
         if (vista == null) vista = "index.jsp";
         
         RequestDispatcher rd = request.getRequestDispatcher(vista);
-        rd.forward(request, response);
+        if (!redirigido) rd.forward(request, response);
     }
 
     // <editor-fold defaultstate="collapsed" desc="HttpServlet methods. Click on the + sign on the left to edit the code.">
@@ -424,6 +568,39 @@ public class SevArticulos extends HttpServlet {
         } catch (Exception e) {
             Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
             throw new RuntimeException(e);
+        }
+    }
+    
+    public void update(Object object) {
+        try {
+            utx.begin();
+            em.merge(object);
+            utx.commit();
+        } catch (Exception e) {
+            Logger.getLogger(getClass().getName()).log(Level.SEVERE, "exception caught", e);
+            throw new RuntimeException(e);
+        }
+    }
+    
+    private void uploadImage(final Part imagen, final String relativeFolderPath, final String nombreImagen) throws IOException {
+        if (imagen.getSize() > 0) {
+            final String absFolderPath = getServletContext().getRealPath(relativeFolderPath);
+            
+            File folder = new File(absFolderPath);
+            if (!folder.exists()) folder.mkdir();
+            
+            File file = new File(absFolderPath + File.separator + nombreImagen + ".jpg");
+            InputStream fileContent;
+            try (OutputStream p = new FileOutputStream(file)) {
+                fileContent = imagen.getInputStream();
+                
+                int read;
+                final byte[] bytes = new byte[1024];
+                while ((read = fileContent.read(bytes)) != -1) {
+                    p.write(bytes, 0, read);
+                }
+            }
+            fileContent.close();
         }
     }
 

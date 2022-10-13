@@ -38,7 +38,7 @@
                                 <button class="btn btn-primary" type="submit" onclick="return validarFiltro();">Search</button>
                             </div>
 
-                            <div class="col-xl-1 ms-xl-4 ms-lg-3 col-md-1 offset-md-0 ms-md-5 col-sm-3 col-3 mt-2 ms-2">
+                            <div class="col-xl-1 ms-xl-4 ms-lg-4 col-md-1 offset-md-0 ms-md-5 col-sm-3 col-3 mt-2 ms-2">
                                 <button class="btn btn-primary" type="button" data-bs-toggle="offcanvas"
                                         data-bs-target="#contenido-filtros" aria-controls="contenido-filtros">Filters</button>
                             </div>
@@ -70,7 +70,7 @@
                                         </div>
                                         <div class="col-md-6">
                                             <label for="filtro-precio-hasta" class="form-label">To</label>
-                                            <input type="number" id="filtro-precio-hasta" name="filtro-precio-hasta" class="form-control" placeholder="Sin límite">
+                                            <input type="number" id="filtro-precio-hasta" name="filtro-precio-hasta" class="form-control" placeholder="No limit">
                                         </div>
 
                                         <div class="col-md-6 mt-4">
